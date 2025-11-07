@@ -2,10 +2,10 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>AR家具配置アプリ</title>
+    <title>AR家具配置シミュレーション</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <style>
-        body {
+        body { 
             margin: 0;
             background-color: #1A202C;
             color: white;
@@ -107,7 +107,7 @@
             min-width: 260px;
             box-sizing: border-box;
         }
-
+        
         #bottom-bar {
             position: absolute;
             bottom: 0;
@@ -206,10 +206,6 @@
         .group-button:active {
             background-color: rgba(255, 255, 255, 0.2);
         }
-        .group-button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
         #delete-button, #confirm-button {
             padding: 16px 28px;
         }
@@ -219,11 +215,11 @@
         #rotate-right-button {
             border-left: 1px solid rgba(255, 255, 255, 0.3);
         }
-
+        
         .rotation-button-group .group-button svg {
             transform: rotate(180deg);
         }
-
+        
         #add-button, #edit-button {
             position: absolute;
             bottom: 90px;
@@ -269,7 +265,7 @@
             align-items: center;
             gap: 5px;
             pointer-events: auto;
-            white-space: nowrap;
+            white-space: nowrap; 
             transition: opacity 0.2s ease;
         }
         .mode-label {
@@ -285,15 +281,15 @@
             color: #1A202C;
             background-color: white;
         }
-
+        
         #top-left-controls {
             position: absolute;
-            top: 40px;
+            top: 40px; 
             left: 20px;
             z-index: 11;
         }
         #top-right-controls {
-            position: absolute;
+            position: absolute; 
             top: 40px;
             right: 20px;
             z-index: 11;
@@ -321,7 +317,7 @@
             border-radius: 20px;
             width: 90%;
             max-width: 520px;
-            height: 580px;
+            height: 580px; 
             max-height: 85vh;
             display: flex;
             flex-direction: column;
@@ -373,8 +369,8 @@
         }
         .help-page-content {
             overflow-y: auto;
-            padding-right: 10px;
-            flex: 1;
+            padding-right: 10px; 
+            flex: 1; 
             min-height: 0;
         }
         .help-page {
@@ -446,7 +442,7 @@
         .gesture-svg .arrow {
             fill: #CBD5E0;
         }
-
+        
         .dialog-container {
             position: fixed;
             top: 0;
@@ -456,7 +452,7 @@
             background-color: rgba(0,0,0,0.6);
             backdrop-filter: blur(5px);
             -webkit-backdrop-filter: blur(5px);
-            display: none;
+            display: none; 
             justify-content: center;
             align-items: center;
             z-index: 300;
@@ -494,85 +490,53 @@
             color: white;
         }
         #confirm-delete-yes {
-            background-color: #E53E3E;
+            background-color: #E53E3E; 
             color: white;
         }
-
+        
         #furniture-modal {
             position: fixed;
-            top: 0; /* 画面上部から */
+            top: 0;
             left: 0;
             width: 100%;
-            height: 100%; /* 高さを自動調整 */
+            height: 100%;
             background-color: rgba(0,0,0,0.5);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             display: none;
             justify-content: center;
-            align-items: flex-end; /* 下に寄せる */
+            align-items: flex-end;
             z-index: 250;
-            padding-bottom: 15vh; /* モーダルを画面下部から持ち上げる */
+            padding-bottom: 15vh;
             box-sizing: border-box;
-            transition: bottom 0.3s ease-out; /* 位置変更をスムーズに */
-            /* top を削除し、bottom をメインに使う */
-            bottom: 0; /* 初期位置は画面下 */
-            /*max-height: 80vh;*/ /* 最大高さを設定 */
-            /* ▼▼▼ 追加・変更箇所 ▼▼▼ */
-            /*height: 60vh; /* 例えば、ビューポートの60%に固定 */
-            /* ▲▲▲ 追加・変更箇所 ▲▲▲ */
         }
-
-        /* ▼▼▼ 新しい要素 #furniture-modal-inner のスタイルを追加 ▼▼▼ */
-        #furniture-modal-inner {
-            max-width: 380px; /* モーダルコンテンツの最大幅 */
-            width: 90%; /* 必要に応じて幅を調整 */
-            height: 35vh; /* ここでモーダルコンテンツの縦幅を固定 */
+        #modal-content {
+            background-color: rgba(45, 55, 72, 0.85);
+            width: 90%;
+            max-width: 500px;
+            max-height: 70vh;
             border-radius: 20px;
+            box-sizing: border-box;
             display: flex;
             flex-direction: column;
             animation: fadeIn 0.3s ease-out;
             position: relative;
-            background-color: rgba(45, 55, 72, 0.85); /* モーダルコンテンツの背景色 */
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            
         }
-        /* ▲▲▲ 新しい要素 #furniture-modal-inner のスタイルを追加 ▲▲▲ */
-
-        /* modal-content スタイルの変更（縦スクロール向け） */
-        #modal-content {
-            /*max-width: 380px; /* 例: 縦スクロールでも片手で操作しやすい幅 */
-            /*height: auto;*/ /* コンテンツに合わせて高さを自動調整 */
-            /*border-radius: 20px; /* 角の丸み */
-            flex: 1; /* 親のFlexコンテナ内で残りのスペースを埋める */
-            min-height: 0; /* flexアイテムの最小高さを設定 */
-            display: flex; /* Flexboxにして子要素の配置を制御 */
-            flex-direction: column; /* 垂直方向に要素を並べる */
-            /*animation: fadeIn 0.3s ease-out;
-            /*position: relative;
-            /*background-color: rgba(45, 55, 72, 0.85); /* background-colorを直接指定 */
-            /*border: 1px solid rgba(255, 255, 255, 0.2); /* ボーダーを追加 */
-            /* ▼▼▼ 追加・変更箇所 ▼▼▼ */
-            /*height: 100%; /* 親要素の #furniture-modal の高さに合わせる */
-            /* ▲▲▲ 追加・変更箇所 ▲▲▲ */
-        }
-
         #modal-header {
             padding: 15px 20px 10px;
             display: flex;
             justify-content: center;
             align-items: center;
-            border-bottom: none; /* カテゴリタブにボーダーを移すため削除 */
+            border-bottom: none;
             flex-shrink: 0;
-            position: relative; /* 子要素のabsolute配置の基準 */
         }
         #modal-header h2 {
             margin: 0;
             font-size: 1.2rem;
-            color: white;
         }
         #close-modal-button {
             position: absolute;
-            bottom: -50px; /* Xボタンの位置調整 */
+            bottom: -70px;
             left: 50%;
             transform: translateX(-50%);
             background: rgba(255,255,255,0.2);
@@ -588,161 +552,42 @@
             line-height: 48px;
             text-align: center;
         }
-
-        /* 検索バーのスタイル */
-        #search-container {
-            padding: 10px 20px;
-            background-color: rgba(0, 0, 0, 0.2);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            flex-shrink: 0;
-            border-radius: 20px 20px 0 0;
-            position: relative; /* 検索アイコンとクリアボタンの基準 */
-        }
-        #search-input {
-            width: calc(100% - 40px); /* アイコンとクリアボタンのスペースを確保 */
-            padding: 10px 15px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 25px;
-            background-color: rgba(255, 255, 255, 0.1);
-            color: white;
-            font-size: 1rem;
-            outline: none;
-            box-sizing: border-box;
-            padding-left: 40px; /* 検索アイコンのスペース */
-        }
-        #search-input::placeholder {
-            color: rgba(255, 255, 255, 0.7);
-        }
-        .search-icon {
-            position: absolute;
-            left: 30px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: rgba(255, 255, 255, 0.7);
-            pointer-events: none; /* クリックイベントを透過させる */
-        }
-        .clear-search-button {
-            position: absolute;
-            right: 30px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 1.2rem;
-            cursor: pointer;
-            padding: 5px;
-            display: none; /* 最初は非表示 */
-        }
-
-        /* カテゴリタブのスタイル */
-        #category-tabs {
-            display: flex;
-            justify-content: flex-start; /* 左寄せ */
-            gap: 8px;
-            padding: 10px 20px;
-            background-color: rgba(0, 0, 0, 0.2);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            overflow-x: auto; /* 横方向のスクロールを有効にする */
-            -webkit-overflow-scrolling: touch; /* iOSでのスムーズなスクロール */
-            white-space: nowrap; /* タブが改行されないようにする */
-            flex-shrink: 0; /* モーダルサイズ変更時に縮小されないようにする */
-            border-radius: 0 0 0 0; /* 上部の角を丸くするのをやめる */
-        }
-
-        .category-tab-button {
-            background-color: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
-            padding: 8px 18px;
-            border-radius: 9999px; /* 角を非常に丸くする */
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: bold;
-            transition: background-color 0.2s ease, color 0.2s ease;
-            flex-shrink: 0; /* ボタン自体が縮小されないようにする */
-        }
-
-        .category-tab-button.active {
-            background-color: white;
-            color: #1A202C; /* 背景色に合わせて文字色を濃くする */
-        }
-
-        .category-tab-button:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-        }
-
-        /* 家具グリッドのスタイル調整（縦スクロール対応） */
         #furniture-grid {
-            display: grid; /* グリッド表示に戻す */
-            grid-template-columns: repeat(3, 1fr); /* 3列表示に変更 */
-            gap: 10px; /* アイテム間のギャップを少し狭める */
-            padding: 15px; /* パディングを調整 */
-            overflow-y: auto; /* 縦方向のスクロールを有効にする */
-            overflow-x: hidden; /* 横方向のスクロールを無効にする */
-            flex: 1; /* 親のFlexコンテナ内で残りのスペースを埋める */
-            min-height: 0; /* flexアイテムの最小高さを設定 */
-            box-sizing: border-box; /* paddingを含めて幅を計算 */
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 15px;
+            padding: 20px;
+            overflow-y: auto;
         }
-
         .grid-item {
             cursor: pointer;
             text-align: center;
             background-color: rgba(255,255,255,0.05);
             border-radius: 12px;
-            padding: 8px 5px; /* パディングを少し減らす */
+            padding: 15px 10px;
             transition: background-color 0.2s ease;
             display: flex;
-            flex-direction: column; /* 画像とテキストを縦に並べるため */
             justify-content: center;
             align-items: center;
-            box-sizing: border-box;
-            width: 90px;    /* 各ボタンの横幅 */
-            height: 90px;   /* 各ボタンの縦幅（正方形に近づける） */
+            min-height: 40px;
         }
         .grid-item:hover {
             background-color: rgba(255,255,255,0.15);
         }
         .grid-item img {
-            display: block; /* とりあえず表示されるように変更 */
-            width: 60px;  /* サムネイルの幅を調整 */
-            height: 60px; /* サムネイルの高さを調整 */
-            object-fit: contain;
-            margin-bottom: 5px; /* 画像とテキストの間の余白 */
-            background-color: rgba(255, 255, 255, 0.1); /* 仮の背景色 */
-            border-radius: 8px;
-            padding: 5px;
+            display: none;
         }
         .grid-item p {
             margin: 0;
-            font-size: 0.75rem; /* テキストサイズをさらに小さく */
-            font-weight: normal;
+            font-size: 1rem;
+            font-weight: bold;
             color: #E2E8F0;
-            white-space: normal;
-            word-break: break-word;
-            line-height: 1.2; /* 行間を詰める */
-            overflow: hidden; /* テキストがはみ出す場合は隠す */
-            text-overflow: ellipsis; /* はみ出した場合に...で表示 */
-            display: -webkit-box;
-            -webkit-line-clamp: 2; /* 2行で収まるように制限 */
-            -webkit-box-orient: vertical;
         }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* キーボード表示時のモーダル位置調整用クラス */
-        .modal-above-keyboard {
-            padding-bottom: 0 !important; /* 通常の padding-bottom をリセット */
-            height: 100%; /* 高さを自動調整 */
-            bottom: var(--keyboard-height, 0px); /* JavaScriptで設定されるカスタムプロパティ */
-            /*transform: none; /* flex-endで配置されるため transform は不要 */
-            align-items: flex-end; /* 下に寄せる */
-        }
-        .modal-above-keyboard #furniture-modal-inner {
-            border-radius: 20px 20px 0 0; /* 下部の角を直角に */
-        }
     </style>
 </head>
 <body>
@@ -751,19 +596,19 @@
     </div>
 
     <div id="ios-ar-container">
-        <h2>表示したい家具を選んでください</h2>
+        <h2>表示したいモデルを選んでください</h2>
         <div id="ios-ar-links">
         </div>
     </div>
-
+    
     <div id="overlay">
-
+        
         <div id="help-modal">
             <div id="help-content-container">
                 <button id="close-help-button">&times;</button>
                 <div class="help-tabs">
                     <button class="help-tab-button active" data-tab="page1">基本操作</button>
-                    <button class="help-tab-button" data-tab="page2">家具の操作</button>
+                    <button class="help-tab-button" data-tab="page2">モデルの操作</button>
                 </div>
                 <div class="help-page-content">
                     <div class="help-page active" id="page1">
@@ -793,129 +638,129 @@
                                     <div class="icon-container">
                                         <svg fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
                                     </div>
-                                    <h4>家具の追加</h4>
-                                    <p>「+」ボタンから配置したい家具を選択します。</p>
+                                    <h4>モデルの追加</h4>
+                                    <p>「+」ボタンから配置したいモデルを選択します。</p>
                                 </div>
                                 <div class="help-card">
                                     <div class="icon-container">
-                                        <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" /></svg>
+                                       <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" /></svg>
                                     </div>
-                                    <h4>家具の編集</h4>
-                                    <p>家具を狙うと出るボタンで再選択できます。</p>
+                                    <h4>モデルの編集</h4>
+                                    <p>モデルを狙うと出るボタンで再選択できます。</p>
                                 </div>
-                                <div class="help-card">
+                                 <div class="help-card">
                                     <div class="icon-container">
                                         <svg fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" /></svg>
                                     </div>
                                     <h4>一覧に戻る</h4>
-                                    <p>家具選択画面に戻ります。</p>
+                                    <p>モデル選択画面に戻ります。</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="help-page" id="page2">
-                            <div class="help-section">
-                                <h3>配置場所の確認</h3>
-                                <div class="help-grid">
-                                    <div class="help-card">
-                                        <div class="icon-container">
-                                            <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><circle cx="12" cy="12" r="7.5" /></svg>
-                                        </div>
-                                        <h4>配置できます</h4>
-                                        <p>地面に輪が表示されている場所に置けます。</p>
+                         <div class="help-section">
+                            <h3>配置場所の確認</h3>
+                            <div class="help-grid">
+                                <div class="help-card">
+                                    <div class="icon-container">
+                                        <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><circle cx="12" cy="12" r="7.5" /></svg>
                                     </div>
-                                    <div class="help-card">
-                                        <div class="icon-container" style="color: #f56565;">
-                                            <svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" /></svg>
-                                        </div>
-                                        <h4>配置できません</h4>
-                                        <p>❌印の場所には置けません。</p>
+                                    <h4>配置できます</h4>
+                                    <p>地面に輪が表示されている場所に置けます。</p>
+                                </div>
+                                <div class="help-card">
+                                    <div class="icon-container" style="color: #f56565;">
+                                        <svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" /></svg>
                                     </div>
+                                    <h4>配置できません</h4>
+                                    <p>❌印の場所には置けません。</p>
                                 </div>
                             </div>
-                            <div class="help-section">
-                                <h3>ジェスチャー操作</h3>
-                                <div class="help-grid">
-                                    <div class="help-card">
-                                        <div class="icon-container">
-                                            <svg viewBox="0 0 48 48" class="gesture-svg">
-                                                <defs><path id="arc-path" d="M8,34 A16,16 0 0,1 40,34" fill="none"/></defs>
-                                                <path d="M12,12 h24 v24 h-24z" stroke-width="1" opacity="0.5"/>
-                                                <use href="#arc-path" stroke-dasharray="4 4" stroke-width="1.5" opacity="0.7"/>
-                                                <circle cx="24" cy="23" r="5" class="finger" />
-                                                <path d="M7 32 L10 35 L13 32 Z" class="arrow"/>
-                                            </svg>
-                                        </div>
-                                        <h4>回転</h4>
-                                        <p>1本指で家具を左右にドラッグして回します。</p>
+                        </div>
+                        <div class="help-section">
+                            <h3>ジェスチャー操作</h3>
+                             <div class="help-grid">
+                                <div class="help-card">
+                                    <div class="icon-container">
+                                        <svg viewBox="0 0 48 48" class="gesture-svg">
+                                            <defs><path id="arc-path" d="M8,34 A16,16 0 0,1 40,34" fill="none"/></defs>
+                                            <path d="M12,12 h24 v24 h-24z" stroke-width="1" opacity="0.5"/>
+                                            <use href="#arc-path" stroke-dasharray="4 4" stroke-width="1.5" opacity="0.7"/>
+                                            <circle cx="24" cy="23" r="5" class="finger" />
+                                            <path d="M7 32 L10 35 L13 32 Z" class="arrow"/>
+                                        </svg>
                                     </div>
-                                    <div class="help-card">
-                                        <div class="icon-container">
-                                            <svg viewBox="0 0 48 48" class="gesture-svg">
-                                                <circle cx="18" cy="30" r="5" class="finger"/>
-                                                <circle cx="30" cy="18" r="5" class="finger"/>
-                                                <path d="M21,27 l-4,-4" stroke-width="1.5" stroke-dasharray="3 3"/>
-                                                <path d="M15,21 l-3,-1 l2,3" class="arrow" />
-                                                <path d="M27,21 l4,4" stroke-width="1.5" stroke-dasharray="3 3"/>
-                                                <path d="M33,27 l3,1 l-2,-3" class="arrow"/>
-                                            </svg>
-                                        </div>
-                                        <h4>拡大・縮小</h4>
-                                        <p>2本指で広げたりつまんでサイズ変更。</p>
+                                    <h4>回転</h4>
+                                    <p>1本指でモデルを左右にドラッグして回します。</p>
+                                </div>
+                                 <div class="help-card">
+                                    <div class="icon-container">
+                                        <svg viewBox="0 0 48 48" class="gesture-svg">
+                                            <circle cx="18" cy="30" r="5" class="finger"/>
+                                            <circle cx="30" cy="18" r="5" class="finger"/>
+                                            <path d="M21,27 l-4,-4" stroke-width="1.5" stroke-dasharray="3 3"/>
+                                            <path d="M15,21 l-3,-1 l2,3" class="arrow" />
+                                            <path d="M27,21 l4,4" stroke-width="1.5" stroke-dasharray="3 3"/>
+                                            <path d="M33,27 l3,1 l-2,-3" class="arrow"/>
+                                        </svg>
                                     </div>
-                                    <div class="help-card">
-                                        <div class="icon-container">
-                                            <svg viewBox="0 0 48 48" class="gesture-svg">
-                                                <path d="M14,18 h20 v12 h-20z" stroke-width="1" opacity="0.5"/>
-                                                <circle cx="24" cy="24" r="5" class="finger"/>
-                                                <circle cx="24" cy="24" r="9" stroke-width="1.5" stroke-dasharray="2 4" opacity="0.9" />
-                                            </svg>
-                                        </div>
-                                        <h4>長押しで削除</h4>
-                                        <p>家具を長押しすると削除の確認ができます。</p>
+                                    <h4>拡大・縮小</h4>
+                                    <p>2本指で広げたりつまんでサイズ変更。</p>
+                                </div>
+                                <div class="help-card">
+                                    <div class="icon-container">
+                                        <svg viewBox="0 0 48 48" class="gesture-svg">
+                                            <path d="M14,18 h20 v12 h-20z" stroke-width="1" opacity="0.5"/>
+                                            <circle cx="24" cy="24" r="5" class="finger"/>
+                                            <circle cx="24" cy="24" r="9" stroke-width="1.5" stroke-dasharray="2 4" opacity="0.9" />
+                                        </svg>
                                     </div>
+                                    <h4>長押しで削除</h4>
+                                    <p>家具を長押しすると削除の確認ができます。</p>
                                 </div>
                             </div>
-                            <div class="help-section">
-                                <h3>ボタン操作</h3>
-                                <div class="help-grid">
-                                    <div class="help-card">
-                                        <div class="icon-container">
-                                            <svg viewBox="0 0 48 48" stroke="#CBD5E0" fill="none">
-                                                <text x="2" y="32" font-family="sans-serif" font-size="20" font-weight="bold" stroke="none" fill="#CBD5E0">-</text>
-                                                <rect x="13" y="22" width="22" height="4" rx="2" stroke="none" fill="rgba(255,255,255,0.4)"></rect>
-                                                <circle cx="24" cy="24" r="6" stroke-width="2" fill="white"></circle>
-                                                <text x="36" y="32" font-family="sans-serif" font-size="20" font-weight="bold" stroke="none" fill="#CBD5E0">+</text>
-                                            </svg>
-                                        </div>
-                                        <h4>サイズ変更</h4>
-                                        <p>スライダーを動かして家具の大きさを変更します。</p>
+                        </div>
+                        <div class="help-section">
+                            <h3>ボタン操作</h3>
+                            <div class="help-grid">
+                                <div class="help-card">
+                                    <div class="icon-container">
+                                        <svg viewBox="0 0 48 48" stroke="#CBD5E0" fill="none">
+                                            <text x="2" y="32" font-family="sans-serif" font-size="20" font-weight="bold" stroke="none" fill="#CBD5E0">-</text>
+                                            <rect x="13" y="22" width="22" height="4" rx="2" stroke="none" fill="rgba(255,255,255,0.4)"></rect>
+                                            <circle cx="24" cy="24" r="6" stroke-width="2" fill="white"></circle>
+                                            <text x="36" y="32" font-family="sans-serif" font-size="20" font-weight="bold" stroke="none" fill="#CBD5E0">+</text>
+                                        </svg>
                                     </div>
-                                    <div class="help-card">
-                                        <div class="icon-container">
-                                            <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="transform: rotate(180deg);">
-                                               <path stroke-linecap="round" stroke-linejoin="round" d="m15 15 6-6m0 0-6-6m6 6H9a6 6 0 0 1 0 12h3" />
-                                            </svg>
-                                        </div>
-                                        <h4>回転</h4>
-                                        <p>タップで45度、長押しで連続回転します。</p>
+                                    <h4>サイズ変更</h4>
+                                    <p>スライダーを動かしてモデルの大きさを変更します。</p>
+                                </div>
+                                <div class="help-card">
+                                    <div class="icon-container">
+                                        <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="transform: rotate(180deg);">
+                                           <path stroke-linecap="round" stroke-linejoin="round" d="m15 15 6-6m0 0-6-6m6 6H9a6 6 0 0 0 0 12h3" />
+                                        </svg>
                                     </div>
-                                    <div class="help-card">
-                                        <div class="icon-container">
-                                            <svg fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
-                                        </div>
-                                        <h4>配置の確定</h4>
-                                        <p>家具の位置や向き、大きさを決定します。</p>
+                                    <h4>回転</h4>
+                                    <p>タップで45度、長押しで連続回転します。</p>
+                                </div>
+                                <div class="help-card">
+                                    <div class="icon-container">
+                                        <svg fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
                                     </div>
-                                    <div class="help-card">
-                                        <div class="icon-container">
-                                            <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.134-2.09-2.134H8.09a2.09 2.09 0 0 0-2.09 2.134v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg>
-                                        </div>
-                                        <h4>削除</h4>
-                                        <p>選択中の家具をシーンから削除します。</p>
+                                    <h4>モデルの確定</h4>
+                                    <p>家具の位置や向き、大きさを決定します。</p>
+                                </div>
+                                 <div class="help-card">
+                                    <div class="icon-container">
+                                        <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.134-2.09-2.134H8.09a2.09 2.09 0 0 0-2.09 2.134v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg>
                                     </div>
+                                    <h4>削除</h4>
+                                    <p>選択中のモデルをシーンから削除します。</p>
                                 </div>
                             </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -925,7 +770,7 @@
             <span style="font-size: 1.25em; font-weight: bold;">床を認識中<span id="loading-dots"></span></span><br><br>
             カメラをゆっくりと<br>床に向けて<br>動かしてください
         </div>
-
+        
         <button id="mode-switch-button">
             <span id="edit-mode-label" class="mode-label">編集モード</span>
             <span id="view-mode-label" class="mode-label">鑑賞モード</span>
@@ -934,9 +779,9 @@
         <div id="top-left-controls">
              <button id="help-button" class="circle-button" style="display: none; width: 56px; height: 56px;">
                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" style="width: 28px; height: 28px;">
-                     <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" />
+                       <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" />
                  </svg>
-             </button>
+            </button>
         </div>
         <div id="top-right-controls">
             <button id="exit-ar-button" class="circle-button" style="display: none; width: 56px; height: 56px;">
@@ -945,11 +790,11 @@
                 </svg>
             </button>
         </div>
-
+        
         <div id="bottom-bar">
             <button id="add-button" class="circle-button"></button>
             <button id="edit-button" class="circle-button"></button>
-
+            
             <div id="transform-controls">
                 <div id="scale-slider-container">
                     <span class="slider-icon">-</span>
@@ -971,7 +816,7 @@
 
         <div id="confirm-dialog" class="dialog-container">
             <div class="dialog-box">
-                <p>この家具を削除しますか？</p>
+                <p>このモデルを削除しますか？</p>
                 <div class="dialog-buttons">
                     <button id="confirm-delete-no">いいえ</button>
                     <button id="confirm-delete-yes">はい</button>
@@ -980,38 +825,13 @@
         </div>
 
         <div id="furniture-modal">
-            <div id="furniture-modal-inner">
-                <div id="search-container">
-                    <input type="text" id="search-input" placeholder="家具を検索...">
-                    <span class="search-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width: 20px; height: 20px;">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-                        </svg>
-                    </span>
-                    <button class="clear-search-button" id="clear-search-button">&times;</button>
-                    <ul id="search-suggestions" style="
-                        position: absolute;
-                        top: calc(100% + 5px);
-                        left: 20px;
-                        right: 20px;
-                        background-color: rgba(45, 55, 72, 0.95);
-                        border-radius: 8px;
-                        list-style: none;
-                        padding: 0;
-                        margin: 0;
-                        max-height: 150px;
-                        overflow-y: auto;
-                        border: 1px solid rgba(255, 255, 255, 0.2);
-                        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-                        display: none;
-                        z-index: 10;
-                    "></ul>
-                </div>
-                <div id="category-tabs">
+            <div id="modal-content">
+                <div id="modal-header">
+                    <h2>モデルを選択</h2>
+                    <button id="close-modal-button">&times;</button>
                 </div>
                 <div id="furniture-grid">
                 </div>
-                <button id="close-modal-button">&times;</button>
             </div>
         </div>
 
@@ -1025,7 +845,7 @@
             }
         }
     </script>
-
+    
     <script type="module">
         import * as THREE from 'three';
         import { ARButton } from 'three/addons/webxr/ARButton.js';
@@ -1045,32 +865,19 @@
             let floorY = null;
             let crossMark;
             let scaleSliderContainer, sliderTrack, sliderHandle;
-
-            let isDraggingSlider = false;
+            
+            let isDraggingSlider = false; 
             let dotAnimationTimer = null;
-
+            
             let helpModal, closeHelpButton;
             let tabButtons, helpPages;
             let confirmDialog, objectPendingDeletion = null;
 
-            // ★家具データ（カテゴリとサムネイルパスを追加）
             const furnitureData = [
-                // 既存の家具
-                { name: 'イス', file: 'chair.glb', height: 0.79, category: 'チェア', thumbnail: 'thumbnails/chair_thumb.png' },
-                { name: '本棚', file: 'bookshelf.glb', height: 1.8, category: '収納', thumbnail: 'thumbnails/bookshelf_thumb.png' },
-                { name: '脚立', file: 'stand.glb', height: 1.2, category: 'その他', thumbnail: 'thumbnails/stand_thumb.png' },
-
-                // ★ここから新しい家具を追加
-                { name: 'ダイニングテーブル', file: 'dining_table.glb', height: 0.75, category: 'テーブル', thumbnail: 'thumbnails/dining_table_thumb.png' },
-                { name: 'ソファ', file: 'sofa.glb', height: 0.7, category: 'ソファ', thumbnail: 'thumbnails/sofa_thumb.png' },
-                { name: 'フロアランプ', file: 'floor_lamp.glb', height: 1.5, category: '照明', thumbnail: 'thumbnails/floor_lamp_thumb.png' },
-                { name: 'デスク', file: 'desk.glb', height: 0.72, category: 'テーブル', thumbnail: 'thumbnails/desk_thumb.png' },
-                { name: 'サイドテーブル', file: 'side_table.glb', height: 0.5, category: 'テーブル', thumbnail: 'thumbnails/side_table_thumb.png' },
-                { name: 'シングルベッド', file: 'single_bed.glb', height: 0.6, category: 'ベッド', thumbnail: 'thumbnails/single_bed_thumb.png' },
-                { name: 'テレビボード', file: 'tv_board.glb', height: 0.4, category: '収納', thumbnail: 'thumbnails/tv_board_thumb.png' },
-                { name: 'ローテーブル', file: 'low_table.glb', height: 0.35, category: 'テーブル', thumbnail: 'thumbnails/low_table_thumb.png' },
-                { name: 'コートハンガー', file: 'coat_hanger.glb', height: 1.7, category: 'その他', thumbnail: 'thumbnails/coat_hanger_thumb.png' },
-                // 必要に応じてさらに家具を追加してください
+                { name: 'フォトグラメトリモデル',   file: 'photographchair_最新版.glb',     height: 0.79},
+                { name: '生成AIモデル',   file: 'AIイス.glb',     height: 0.79},
+                { name: '実験モデル',   file: 'photograph_and_AIchair_最新版.glb', height: 0.79}, 
+ 
             ];
             let currentFurniture = furnitureData[0];
             let previewObject = null;
@@ -1079,10 +886,10 @@
             let selectedObject = null;
             let hoveredObject = null;
             let appState = 'IDLE';
-            let isEditMode = false;
+            let isEditMode = false; 
             let isFloorDetected = false;
 
-            const objectsToDelete = [];
+            const objectsToDelete = []; 
             const clock = new THREE.Clock();
 
             const gestureState = {
@@ -1096,12 +903,12 @@
                 startY: 0,
                 longPressTimer: null,
             };
-
+            
             let isRotatingContinuously = false;
             let continuousRotationDirection = 0;
-
+            
             init();
-
+            
             function createCrossMark() {
                 const canvas = document.createElement('canvas');
                 const size = 256;
@@ -1123,10 +930,10 @@
                 context.lineTo(margin, size - margin);
                 context.stroke();
                 const texture = new THREE.CanvasTexture(canvas);
-                const material = new THREE.MeshBasicMaterial({
-                    map: texture,
+                const material = new THREE.MeshBasicMaterial({ 
+                    map: texture, 
                     transparent: true,
-                    depthTest: false
+                    depthTest: false 
                 });
                 const geometry = new THREE.PlaneGeometry(1, 1);
                 const plane = new THREE.Mesh(geometry, material);
@@ -1148,7 +955,7 @@
                     .then(() => console.log("すべてのモデルの事前読み込みが完了しました！"))
                     .catch(error => console.error("モデルの事前読み込み中にエラーが発生しました。", error));
             }
-
+            
             function resetScene() {
                 placedObjects.forEach(object => scene.remove(object));
                 placedObjects.length = 0;
@@ -1160,7 +967,7 @@
 
                 if(reticle) scene.remove(reticle);
                 reticle = null;
-
+                
                 appState = 'IDLE';
                 isFloorDetected = false;
                 floorY = null;
@@ -1174,13 +981,13 @@
                 scene = new THREE.Scene();
                 camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 20);
                 scene.add(new THREE.HemisphereLight(0xffffff, 0xbbbbff, 3));
-
+                
                 crossMark = createCrossMark();
                 scene.add(crossMark);
-
-                renderer = new THREE.WebGLRenderer({
-                    antialias: true,
-                    alpha: true,
+                
+                renderer = new THREE.WebGLRenderer({ 
+                    antialias: true, 
+                    alpha: true, 
                 });
                 renderer.setPixelRatio(window.devicePixelRatio);
                 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -1191,12 +998,12 @@
                 overlay.addEventListener('touchstart', handleTouchStart, { passive: false });
                 overlay.addEventListener('touchmove', handleTouchMove, { passive: false });
                 overlay.addEventListener('touchend', handleTouchEnd);
-
+                
                 document.getElementById('add-button').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" style="width: 32px; height: 32px;"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>`;
                 document.getElementById('edit-button').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width: 28px; height: 28px;"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" /></svg>`;
                 document.getElementById('delete-button').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width: 28px; height: 28px;"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.134-2.09-2.134H8.09a2.09 2.09 0 0 0-2.09 2.134v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg>`;
                 document.getElementById('confirm-button').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" style="width: 28px; height: 28px;"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>`;
-
+                
                 const rotateLeftIconSVG = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width: 28px; height: 28px;"><path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" /></svg>`;
                 const rotateRightIconSVG = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width: 28px; height: 28px;"><path stroke-linecap="round" stroke-linejoin="round" d="m15 15 6-6m0 0-6-6m6 6H9a6 6 0 0 0 0 12h3" /></svg>`;
                 document.getElementById('rotate-left-button').innerHTML = rotateLeftIconSVG;
@@ -1205,7 +1012,7 @@
                 renderer.xr.addEventListener('sessionstart', () => {
                     document.getElementById('title-container').style.display = 'none';
                     resetScene();
-                    isEditMode = true;
+                    isEditMode = true; 
                     updateUI();
                     initializeARExperience();
                     preloadModels();
@@ -1217,9 +1024,9 @@
                     document.getElementById('exit-ar-button').style.display = 'none';
                     document.getElementById('help-button').style.display = 'none';
                     document.getElementById('mode-switch-button').style.display = 'none';
-                    stopDotAnimation();
+                    stopDotAnimation(); 
                 });
-
+                
                 animate();
 
                 document.body.appendChild(ARButton.createButton(renderer, {
@@ -1230,166 +1037,53 @@
             }
 
             function initializeARExperience() {
-                reticle = new THREE.Mesh(
-                    new THREE.RingGeometry(0.15, 0.2, 32).rotateX(-Math.PI / 2),
+                reticle = new THREE.Mesh( 
+                    new THREE.RingGeometry(0.08, 0.1, 32).rotateX(-Math.PI / 2), 
                     new THREE.MeshBasicMaterial()
                 );
                 reticle.matrixAutoUpdate = false;
                 reticle.visible = false;
                 scene.add(reticle);
-                setupUI(); // ここでUI要素のイベントリスナーを設定
+                setupUI();
             }
-
-            // ★カテゴリタブとスワイプ機能関連の変数と関数
-            const categoryTabsContainer = document.getElementById('category-tabs');
-            const modalContent = document.getElementById('modal-content'); // スワイプイベントリスナーの親要素
-            const searchInput = document.getElementById('search-input');
-            const clearSearchButton = document.getElementById('clear-search-button');
-
-            let allCategories = []; // すべてのカテゴリを保持する配列
-            let currentCategoryIndex = 0; // 現在選択されているカテゴリのインデックス
-
-            function updateAllCategories() {
-                allCategories = [...new Set(furnitureData.map(item => item.category))].sort();
-                allCategories.unshift('すべて'); // 「すべて」タブを先頭に追加
-            }
-
-            function populateCategories() {
-                categoryTabsContainer.innerHTML = ''; // 既存のタブをクリア
-                updateAllCategories(); // カテゴリリストを更新
-
-                allCategories.forEach(category => {
-                    const tabButton = document.createElement('button');
-                    tabButton.className = 'category-tab-button';
-                    tabButton.textContent = category;
-                    tabButton.dataset.category = category; // データ属性にカテゴリ名を設定
-
-                    tabButton.addEventListener('click', () => {
-                        // 検索フィールドをクリア
-                        searchInput.value = '';
-                        clearSearchButton.style.display = 'none';
-                        // すべてのタブから active クラスを削除
-                        document.querySelectorAll('.category-tab-button').forEach(btn => {
-                            btn.classList.remove('active');
-                        });
-                        // クリックされたタブに active クラスを追加
-                        tabButton.classList.add('active');
-                        // 現在のカテゴリインデックスを更新
-                        currentCategoryIndex = allCategories.indexOf(category);
-                        // 選択されたカテゴリの家具を表示
-                        displayFurniture(category);
-                    });
-                    categoryTabsContainer.appendChild(tabButton);
-                });
-
-                // 初期状態で「すべて」タブをアクティブにする
-                currentCategoryIndex = 0; // 「すべて」は常にインデックス0
-                activateCategoryTab(allCategories[currentCategoryIndex]);
-            }
-
-            // 指定されたカテゴリの家具を表示する (検索キーワード対応)
-            function displayFurniture(category, searchTerm = '') {
-                const furnitureGrid = document.getElementById('furniture-grid');
-                furnitureGrid.innerHTML = ''; // グリッドをクリア
-
-                const lowerCaseSearchTerm = searchTerm.toLowerCase().trim();
-
-                // フィルタリングする家具データのリスト
-                const filteredFurniture = furnitureData.filter(item => {
-                    const matchesCategory = (category === 'すべて' || item.category === category);
-                    const matchesSearch = item.name.toLowerCase().includes(lowerCaseSearchTerm);
-                    return matchesCategory && matchesSearch;
-                });
-
-                if (filteredFurniture.length === 0) {
-                    furnitureGrid.innerHTML = '<p style="text-align: center; color: rgba(255,255,255,0.7); padding: 20px;">家具が見つかりませんでした。</p>';
-                } else {
-                    filteredFurniture.forEach(item => {
-                        const gridItem = document.createElement('div');
-                        gridItem.className = 'grid-item';
-                        gridItem.dataset.category = item.category; // アイテムにもカテゴリ情報を持たせる
-
-                        // サムネイル画像を作成
-                        //const img = document.createElement('img');
-                        //img.src = item.thumbnail;
-                        //img.alt = item.name;
-                        // 画像の読み込みエラー時のフォールバック（画像がない場合、非表示にする）
-                        //img.onerror = () => { img.style.display = 'none'; console.warn(`Thumbnail not found or failed to load: ${item.thumbnail}`); };
-                        //gridItem.appendChild(img);
-
-                        // 家具名テキストを作成
-                        const p = document.createElement('p');
-                        p.textContent = item.name;
-                        gridItem.appendChild(p);
-
-                        gridItem.addEventListener('click', (e) => {
-                            e.stopPropagation();
-                            currentFurniture = item;
-                            updatePreviewObject();
-                            appState = 'PLACING';
-                            document.getElementById('furniture-modal').style.display = 'none'; // モーダルを閉じる
-                            updateUI();
-                        });
-                        furnitureGrid.appendChild(gridItem);
-                    });
-                }
-            }
-
-            // ★キーボードの表示/非表示を検知してモーダル位置を調整する
-            let initialViewportHeight = window.innerHeight;
-            let currentKeyboardHeight = 0;
-
-            function adjustModalForKeyboard() {
-                const furnitureModal = document.getElementById('furniture-modal');
-                // Viewport height changes are often an indicator of keyboard appearance/disappearance
-                const newViewportHeight = window.innerHeight;
-
-                // iOSのvisualViewport APIを優先的に使用
-                if (window.visualViewport) {
-                    // visualViewport.height はキーボードが表示されている場合に小さくなる
-                    currentKeyboardHeight = initialViewportHeight - window.visualViewport.height;
-                } else {
-                    // Androidなど、visualViewportがない場合のフォールバック（少し不安定な場合がある）
-                    currentKeyboardHeight = initialViewportHeight - newViewportHeight;
-                }
-
-                if (currentKeyboardHeight > 50) { // 50px以上変化したらキーボードが表示されたと判断
-                    furnitureModal.classList.add('modal-above-keyboard');
-                    furnitureModal.style.setProperty('--keyboard-height', `${currentKeyboardHeight}px`);
-                } else {
-                    furnitureModal.classList.remove('modal-above-keyboard');
-                    furnitureModal.style.removeProperty('--keyboard-height');
-                }
-            }
-            // Safari/Chrome on iOS, Chrome on Android でのキーボード表示を検知
-            if (window.visualViewport) {
-                window.visualViewport.addEventListener('resize', adjustModalForKeyboard);
-            } else {
-                window.addEventListener('resize', adjustModalForKeyboard);
-            }
-
 
             function setupUI() {
                 const furnitureModal = document.getElementById('furniture-modal');
                 const closeModalButton = document.getElementById('close-modal-button');
+                const furnitureGrid = document.getElementById('furniture-grid');
                 
-                // add-buttonクリック時、家具モーダルを表示し、カテゴリタブと家具を初期化・表示
+                furnitureGrid.innerHTML = '';
+                furnitureData.forEach(item => {
+                    const gridItem = document.createElement('div');
+                    gridItem.className = 'grid-item';
+                    
+                    const p = document.createElement('p');
+                    p.textContent = item.name;
+                    
+                    gridItem.appendChild(p);
+
+                    gridItem.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        currentFurniture = item;
+                        updatePreviewObject();
+                        appState = 'PLACING';
+                        furnitureModal.style.display = 'none';
+                        updateUI();
+                    });
+                    
+                    furnitureGrid.appendChild(gridItem);
+                });
+
                 document.getElementById('add-button').addEventListener('click', (e) => {
                     e.stopPropagation();
                     if (appState === 'IDLE') {
                         furnitureModal.style.display = 'flex';
-                        populateCategories(); // カテゴリタブを生成・初期化
-                        displayFurniture(allCategories[currentCategoryIndex]); // 現在のカテゴリの家具を表示
-                        searchInput.focus(); // 検索フィールドにフォーカス
                     }
                 });
 
                 const closeModal = (e) => {
                     e.stopPropagation();
                     furnitureModal.style.display = 'none';
-                    searchInput.blur(); // モーダルを閉じるときに検索フィールドからフォーカスを外す
-                    currentKeyboardHeight = 0; // キーボードの高さをリセット
-                    adjustModalForKeyboard(); // モーダル位置をリセット
                 };
                 closeModalButton.addEventListener('click', closeModal);
                 furnitureModal.addEventListener('click', (e) => {
@@ -1398,27 +1092,6 @@
                     }
                 });
 
-                // 検索機能のイベントリスナー
-                searchInput.addEventListener('input', (e) => {
-                    const searchTerm = e.target.value;
-                    const activeCategory = document.querySelector('.category-tab-button.active')?.dataset.category || 'すべて';
-                    displayFurniture(activeCategory, searchTerm);
-                    if (searchTerm.length > 0) {
-                        clearSearchButton.style.display = 'block';
-                    } else {
-                        clearSearchButton.style.display = 'none';
-                    }
-                });
-
-                clearSearchButton.addEventListener('click', () => {
-                    searchInput.value = '';
-                    clearSearchButton.style.display = 'none';
-                    const activeCategory = document.querySelector('.category-tab-button.active')?.dataset.category || 'すべて';
-                    displayFurniture(activeCategory);
-                    searchInput.focus(); // クリア後に再度フォーカス
-                });
-
-
                 document.getElementById('exit-ar-button').addEventListener('click', (e) => { e.stopPropagation(); endSession(); });
                 function endSession() {
                     const currentSession = renderer.xr.getSession();
@@ -1426,7 +1099,7 @@
                         currentSession.end();
                     }
                 }
-
+                
                 helpModal = document.getElementById('help-modal');
                 closeHelpButton = document.getElementById('close-help-button');
                 document.getElementById('help-button').addEventListener('click', (e) => {
@@ -1442,7 +1115,7 @@
                         helpModal.style.display = 'none';
                     }
                 });
-
+                
                 tabButtons = document.querySelectorAll('.help-tab-button');
                 helpPages = document.querySelectorAll('.help-page');
                 tabButtons.forEach(button => {
@@ -1456,7 +1129,7 @@
                         });
                     });
                 });
-
+                
                 confirmDialog = document.getElementById('confirm-dialog');
                 const confirmYesBtn = document.getElementById('confirm-delete-yes');
                 const confirmNoBtn = document.getElementById('confirm-delete-no');
@@ -1491,7 +1164,7 @@
                 });
 
                 document.getElementById('edit-button').addEventListener('click', (e) => { e.stopPropagation(); onSelect(); });
-
+                
                 const rotateLeftButton = document.getElementById('rotate-left-button');
                 const rotateRightButton = document.getElementById('rotate-right-button');
                 setupRotationButtonEvents(rotateLeftButton, 1);
@@ -1499,7 +1172,7 @@
 
                 document.getElementById('delete-button').addEventListener('click', (e) => { e.stopPropagation(); onDelete(); });
                 document.getElementById('confirm-button').addEventListener('click', (e) => { e.stopPropagation(); onConfirm(); });
-
+                
                 scaleSliderContainer = document.getElementById('scale-slider-container');
                 sliderTrack = document.getElementById('slider-track');
                 sliderHandle = document.getElementById('slider-handle');
@@ -1515,70 +1188,13 @@
                     percent = Math.max(0, Math.min(1, percent));
                     updateScaleFromSlider(percent);
                 };
-
+                
                 sliderHandle.addEventListener('mousedown', onSliderDragStart);
                 document.addEventListener('mousemove', onSliderDragMove);
                 document.addEventListener('mouseup', onSliderDragEnd);
                 sliderHandle.addEventListener('touchstart', onSliderDragStart, { passive: false });
                 document.addEventListener('touchmove', onSliderDragMove, { passive: false });
                 document.addEventListener('touchend', onSliderDragEnd);
-                
-                // ★家具モーダルでのスワイプイベントリスナーをmodalContentに設定
-                let modalContent = document.getElementById('furniture-modal-inner');
-                
-                let touchStartX = 0;
-                let touchEndX = 0;
-                const swipeThreshold = 50; // スワイプと認識する最小距離（ピクセル）
-
-                modalContent.addEventListener('touchstart', (e) => {
-                    // カテゴリタブ、閉じるボタン、検索入力、グリッドアイテム上でのスワイプは処理しない
-                    if (e.target.closest('.category-tab-button') || e.target.closest('#close-modal-button') || e.target.closest('#search-input')) {
-                        return; 
-                    }
-                    touchStartX = e.changedTouches[0].clientX;
-                }, { passive: true });
-
-                modalContent.addEventListener('touchend', (e) => {
-                    // touchstartで除外したものと同じ要素を再度チェック
-                    if (e.target.closest('.category-tab-button') || e.target.closest('#close-modal-button') || e.target.closest('#search-input')) {
-                        return; 
-                    }
-                    touchEndX = e.changedTouches[0].clientX;
-                    handleSwipeGesture();
-                }, { passive: true });
-
-                function handleSwipeGesture() {
-                    const swipeDistance = touchEndX - touchStartX;
-
-                    if (Math.abs(swipeDistance) > swipeThreshold) {
-                        if (swipeDistance < 0) { // 左スワイプ（次のカテゴリへ）
-                            currentCategoryIndex++;
-                            if (currentCategoryIndex >= allCategories.length) {
-                                currentCategoryIndex = 0; // 最後まで行ったら最初に戻る
-                            }
-                        } else { // 右スワイプ（前のカテゴリへ）
-                            currentCategoryIndex--;
-                            if (currentCategoryIndex < 0) {
-                                currentCategoryIndex = allCategories.length - 1; // 最初まで行ったら最後に戻る
-                            }
-                        }
-                        const newCategory = allCategories[currentCategoryIndex];
-                        activateCategoryTab(newCategory); // 新しいカテゴリのタブをアクティブにする
-                        displayFurniture(newCategory, searchInput.value); // 家具表示を更新（検索キーワードも考慮）
-                    }
-                }
-
-                // アクティブなカテゴリタブを更新し、スクロールするヘルパー関数
-                function activateCategoryTab(categoryToActivate) {
-                    document.querySelectorAll('.category-tab-button').forEach(btn => {
-                        btn.classList.remove('active');
-                        if (btn.dataset.category === categoryToActivate) {
-                            btn.classList.add('active');
-                            // アクティブなタブがビューポート内に収まるようにスクロール
-                            btn.scrollIntoView({ behavior: 'smooth', inline: 'center' });
-                        }
-                    });
-                }
             }
 
             function setupRotationButtonEvents(button, direction) {
@@ -1603,20 +1219,20 @@
                 button.addEventListener('touchend', pressEnd);
                 button.addEventListener('mouseleave', pressEnd);
             }
-
+            
             function getDistance(touches) {
                 const dx = touches[0].clientX - touches[1].clientX;
                 const dy = touches[0].clientY - touches[1].clientY;
                 return Math.sqrt(dx * dx + dy * dy);
             }
-
+            
             function onObjectTap(event) {
                 const touch = event.changedTouches[0];
                 const tapPosition = new THREE.Vector2(
                     (touch.clientX / window.innerWidth) * 2 - 1,
                     - (touch.clientY / window.innerHeight) * 2 + 1
                 );
-
+                
                 raycaster.setFromCamera(tapPosition, camera);
 
                 if (appState === 'PLACING' || appState === 'EDITING') {
@@ -1640,7 +1256,7 @@
                     }
                 }
             }
-
+            
             function handleLongPress(tappedObject) {
                 if (!tappedObject || confirmDialog.style.display === 'flex') return;
                 objectPendingDeletion = tappedObject;
@@ -1655,13 +1271,13 @@
                 gestureState.startTime = Date.now();
                 gestureState.startX = event.touches[0].clientX;
                 gestureState.startY = event.touches[0].clientY;
-
+                
                 if (gestureState.touchCount === 1) {
                     if (!isEditMode) return;
                     clearTimeout(gestureState.longPressTimer);
                     gestureState.longPressTimer = setTimeout(() => {
-                        gestureState.longPressTimer = null;
-
+                        gestureState.longPressTimer = null; 
+                        
                         const tapPosition = new THREE.Vector2(
                             (gestureState.startX / window.innerWidth) * 2 - 1,
                             - (gestureState.startY / window.innerHeight) * 2 + 1
@@ -1676,7 +1292,7 @@
                         } else if (appState === 'EDITING' && selectedObject) {
                             objectsToCheck = [selectedObject];
                         }
-
+                        
                         const intersects = raycaster.intersectObjects(objectsToCheck, true);
 
                         if (intersects.length > 0) {
@@ -1699,10 +1315,10 @@
                 if (gestureState.touchCount === 1) {
                     gestureState.lastX = event.touches[0].clientX;
                 } else if (gestureState.touchCount >= 2) {
-                    clearTimeout(gestureState.longPressTimer);
+                    clearTimeout(gestureState.longPressTimer); 
                     gestureState.initialDistance = getDistance(event.touches);
                     if (activeObject) {
-                        gestureState.originalMultiplier = activeObject.userData.scaleMultiplier || 1.0;
+                        gestureState.originalMultiplier = activeObject.userData.scaleMultiplier || 1.0; 
                     }
                 }
             }
@@ -1710,12 +1326,12 @@
             function handleTouchMove(event) {
                 if (event.target !== event.currentTarget || confirmDialog.style.display === 'flex') return;
                 event.preventDefault();
-
+                
                 if (gestureState.longPressTimer) {
                     const moveX = event.touches[0].clientX;
                     const moveY = event.touches[0].clientY;
                     const distance = Math.sqrt(Math.pow(moveX - gestureState.startX, 2) + Math.pow(moveY - gestureState.startY, 2));
-                    if (distance > 10) {
+                    if (distance > 10) { 
                        clearTimeout(gestureState.longPressTimer);
                        gestureState.longPressTimer = null;
                     }
@@ -1732,10 +1348,10 @@
                     gestureState.lastX = currentX;
 
                 } else if (gestureState.touchCount >= 2 && event.touches.length >= 2) {
-                    if (gestureState.initialDistance === 0) return;
+                    if (gestureState.initialDistance === 0) return; 
                     const currentDistance = getDistance(event.touches);
                     const scaleRatio = currentDistance / gestureState.initialDistance;
-
+                    
                     let newMultiplier = gestureState.originalMultiplier * scaleRatio;
                     newMultiplier = Math.max(0.5, Math.min(2.0, newMultiplier));
 
@@ -1749,32 +1365,32 @@
 
             function handleTouchEnd(event) {
                 if (event.target !== event.currentTarget) return;
-
+                
                 const wasLongPressTriggered = !gestureState.longPressTimer;
                 clearTimeout(gestureState.longPressTimer);
                 gestureState.longPressTimer = null;
-
+                
                 const touchDuration = Date.now() - gestureState.startTime;
                 const touchEndX = event.changedTouches[0].clientX;
                 const touchEndY = event.changedTouches[0].clientY;
                 const distanceMoved = Math.sqrt(
-                    Math.pow(touchEndX - gestureState.startX, 2) +
+                    Math.pow(touchEndX - gestureState.startX, 2) + 
                     Math.pow(touchEndY - gestureState.startY, 2)
                 );
 
                 if (!wasLongPressTriggered && touchDuration < 200 && distanceMoved < 10) {
                     onObjectTap(event);
                 }
-
+                
                 if (event.touches.length === 0) {
                     gestureState.isInteracting = false;
                 }
                 if (event.touches.length > 0 && event.touches.length !== gestureState.touchCount) {
-                    handleTouchStart(event);
+                     handleTouchStart(event);
                 }
                 gestureState.touchCount = event.touches.length;
             }
-
+            
             function updateSliderForObject(object) {
                 if (!object) return;
                 const multiplier = object.userData.scaleMultiplier || 1.0;
@@ -1786,7 +1402,7 @@
                 const handleWidth = sliderHandle.offsetWidth;
                 const trackWidth = sliderTrack.offsetWidth;
                 sliderHandle.style.left = `calc(${percent * 100}% - ${handleWidth * percent}px)`;
-
+                
                 const scale = 0.8 + 0.4 * percent;
                 sliderHandle.style.transform = `translateY(-50%) scale(${scale})`;
             }
@@ -1794,55 +1410,54 @@
             function updateScaleFromSlider(percent) {
                 const activeObject = (appState === 'PLACING') ? previewObject : selectedObject;
                 if (!activeObject) return;
-
+                
                 const multiplier = 0.5 + percent * 1.5;
                 activeObject.userData.scaleMultiplier = multiplier;
-
+                
                 const initialScale = activeObject.userData.initialScale;
                 activeObject.scale.copy(initialScale).multiplyScalar(multiplier);
 
                 updateSliderHandlePosition(percent);
             }
 
-            function updatePreviewObject() {
+            function updatePreviewObject() { 
                 if (previewObject) {
                     scene.remove(previewObject);
                     previewObject = null;
                 }
                 const gltf = preloadedModels.get(currentFurniture.file);
                 if (!gltf) return;
-
+                
                 previewObject = gltf.scene.clone();
                 setObjectTransparency(previewObject, true);
 
                 const initialBox = new THREE.Box3().setFromObject(previewObject);
                 const initialCenter = new THREE.Vector3();
                 initialBox.getCenter(initialCenter);
-
+                
                 const size = initialBox.getSize(new THREE.Vector3());
                 const scaleFactor = currentFurniture.height / size.y;
                 previewObject.scale.set(scaleFactor, scaleFactor, scaleFactor);
-
+                
                 previewObject.userData.initialScale = previewObject.scale.clone();
                 previewObject.userData.scaleMultiplier = 1.0;
                 previewObject.userData.centerOffset = initialCenter.multiplyScalar(scaleFactor);
-                // ❌マークの大きさを調整 (0.2に修正)
                 previewObject.userData.crossMarkScale = Math.max(size.x, size.z) * scaleFactor;
 
                 previewObject.visible = false;
                 scene.add(previewObject);
                 updateSliderForObject(previewObject);
             }
-
+            
             function onSelect() {
                 if (hoveredObject) {
                     selectAndEditObject(hoveredObject);
                 }
             }
-
+            
             function selectAndEditObject(objectToEdit) {
                 if (!isEditMode || appState !== 'IDLE' || !objectToEdit) return;
-
+                
                 if (selectedObject) {
                     setObjectTransparency(selectedObject, false);
                 }
@@ -1850,7 +1465,7 @@
                 if (hoveredObject === selectedObject) {
                     hoveredObject = null;
                 }
-
+                
                 setObjectTransparency(selectedObject, true);
                 appState = 'EDITING';
                 updateUI();
@@ -1867,17 +1482,17 @@
                     updateUI();
                 }
             }
-
+            
             function onRotate(direction) {
                 const target = (appState === 'PLACING') ? previewObject : selectedObject;
                 if (target) {
                     target.rotation.y += (Math.PI / 4) * direction;
                 }
             }
-
+            
             function startDeleteAnimation(objectToDelete) {
                 if (!objectToDelete) return;
-
+                
                 const indexInPlaced = placedObjects.indexOf(objectToDelete);
                 if (indexInPlaced > -1) {
                     placedObjects.splice(indexInPlaced, 1);
@@ -1889,18 +1504,18 @@
                     duration: 0.3,
                     initialY: objectToDelete.position.y
                 });
-
+                
                 if (objectToDelete === selectedObject) {
                     selectedObject = null;
                     appState = 'IDLE';
                     updateUI();
                 } else if (appState === 'PLACING' && objectToDelete === previewObject) {
                     previewObject = null;
-                    appState = 'IDLE';
+                    appState = 'IDLE'; 
                     updateUI();
                 }
             }
-
+            
             function onDelete() {
                 if (appState === 'EDITING' && selectedObject) {
                     handleLongPress(selectedObject);
@@ -1908,8 +1523,8 @@
                     handleLongPress(previewObject);
                 }
             }
-
-            function placeNewObject() {
+            
+            function placeNewObject() { 
                 if (!previewObject) return;
                 const solidObject = previewObject.clone();
                 setObjectTransparency(solidObject, false);
@@ -1926,12 +1541,12 @@
                 appState = 'IDLE';
                 updateUI();
             }
-
+            
             function setObjectTransparency(object, isTransparent, opacity = 0.7) {
                 if (!object) return;
                 object.traverse(child => {
                     if (child.isMesh) {
-                        child.material.transparent = true;
+                        child.material.transparent = true; 
                         child.material.opacity = isTransparent ? opacity : 1.0;
                     }
                 });
@@ -1943,12 +1558,11 @@
                 const modeSwitchButton = document.getElementById('mode-switch-button');
                 const editModeLabel = document.getElementById('edit-mode-label');
                 const viewModeLabel = document.getElementById('view-mode-label');
-
+                
                 const helpButton = document.getElementById('help-button');
                 const transformControls = document.getElementById('transform-controls');
                 const decisionControls = document.getElementById('decision-controls');
-                const decisionConfirmButton = document.querySelector('#decision-controls #confirm-button');
-
+                
                 document.getElementById('exit-ar-button').style.display = 'flex';
                 helpButton.style.display = 'flex';
                 modeSwitchButton.style.display = 'flex';
@@ -1983,10 +1597,10 @@
                             decisionControls.style.display = 'flex';
                             break;
                     }
-                } else {
+                } else { 
                     editModeLabel.classList.remove('active');
                     viewModeLabel.classList.add('active');
-
+                    
                     addButton.style.display = 'none';
                     editButton.style.display = 'none';
                     transformControls.style.display = 'none';
@@ -1997,9 +1611,9 @@
             function handleHover() {
                 if (gestureState.isInteracting || isRotatingContinuously || gestureState.longPressTimer) {
                     if(hoveredObject) {
-                                setObjectTransparency(hoveredObject, false);
-                                hoveredObject = null;
-                                updateUI();
+                          setObjectTransparency(hoveredObject, false);
+                          hoveredObject = null;
+                          updateUI();
                     }
                     return;
                 }
@@ -2012,7 +1626,7 @@
                     }
                     return;
                 }
-
+                
                 raycaster.setFromCamera({ x: 0, y: 0 }, camera);
                 const intersects = raycaster.intersectObjects(placedObjects, true);
                 let newHoveredObject = null;
@@ -2021,12 +1635,12 @@
                     while (currentObject) {
                         if (placedObjects.includes(currentObject)) {
                             newHoveredObject = currentObject;
-                            break;
+                            break; 
                         }
                         currentObject = currentObject.parent;
                     }
                 }
-
+                
                 if (newHoveredObject !== hoveredObject) {
                     if (hoveredObject) setObjectTransparency(hoveredObject, false);
                     if (newHoveredObject && newHoveredObject !== selectedObject) {
@@ -2036,19 +1650,19 @@
                     updateUI();
                 }
             }
-
+            
             function startDotAnimation() {
-                if (dotAnimationTimer) return;
+                if (dotAnimationTimer) return; 
                 const dotsElement = document.getElementById('loading-dots');
                 if (!dotsElement) return;
 
                 let dotCount = 0;
                 const dots = ['・', '・・', '・・・'];
-
+                
                 dotAnimationTimer = setInterval(() => {
                     dotsElement.textContent = dots[dotCount % dots.length];
                     dotCount++;
-                }, 400);
+                }, 400); 
             }
 
             function stopDotAnimation() {
@@ -2068,7 +1682,7 @@
                 for (let i = objectsToDelete.length - 1; i >= 0; i--) {
                     const item = objectsToDelete[i];
                     const progress = (elapsedTime - item.startTime) / item.duration;
-
+                    
                     if (progress < 1) {
                         item.object.position.y = item.initialY + progress * 0.5;
                         const opacity = 1.0 - progress;
@@ -2082,7 +1696,7 @@
                 if (!renderer.xr.isPresenting) {
                     return;
                 }
-
+                
                 if (isRotatingContinuously && (appState === 'PLACING' || appState === 'EDITING')) {
                     const target = (appState === 'PLACING') ? previewObject : selectedObject;
                     if (target) {
@@ -2092,7 +1706,7 @@
                 }
 
                 handleHover();
-
+                
                 const instructionText = document.getElementById('instruction-text');
                 let isPlaceable = false;
                 const activeObject = (appState === 'PLACING') ? previewObject : selectedObject;
@@ -2107,89 +1721,82 @@
                             const hit = hitTestResults[0];
                             const hitPose = hit.getPose(referenceSpace);
                             const hitY = hitPose.transform.position.y;
-
+                            
                             if (floorY === null) floorY = hitY;
-
+                            
                             if (!isFloorDetected) {
                                 isFloorDetected = true;
                                 updateUI();
                             }
+                            
+                            // ▼▼▼▼▼ ここからがコメントアウト対象 ▼▼▼▼▼
 
-                            const Y_TOLERANCE = 0.2; // 20cmの許容範囲
-                            const isOnFloor = Math.abs(hitY - floorY) < Y_TOLERANCE;
+                            // const Y_TOLERANCE = 0.2;
+                            // isPlaceable = Math.abs(hitY - floorY) < Y_TOLERANCE;
+                            
+                            // 上の判定を無効化し、常に「配置可能」とするためのコード
+                            isPlaceable = true;
 
+                            // ▲▲▲▲▲ ここまでがコメントアウト対象 ▲▲▲▲▲
+                            
                             if(reticle) reticle.matrix.fromArray(hitPose.transform.matrix);
-
+                            
                             if (instructionText.style.display !== 'none') {
                                 instructionText.style.display = 'none';
                                 stopDotAnimation();
                             }
 
                             if (isEditMode) {
-                                if (activeObject && !gestureState.isInteracting && !isRotatingContinuously) {
+                                if (activeObject && !gestureState.isInteracting && !isRotatingContinuously) { 
                                     activeObject.position.setFromMatrixPosition(reticle.matrix);
                                 }
                                 if(activeObject) activeObject.visible = true;
-
+                                
                                 if (appState === 'PLACING' || appState === 'EDITING') {
-                                    // 衝突判定ロジック
-                                    let isColliding = false;
-                                    if (activeObject) { // activeObjectが存在する場合のみ衝突判定を行う
-                                        const activeObjectBox = new THREE.Box3().setFromObject(activeObject);
-                                        for (const placedObj of placedObjects) {
-                                            if (placedObj === activeObject) continue; // 自身とは衝突判定しない
-                                            const placedObjBox = new THREE.Box3().setFromObject(placedObj);
-                                            if (activeObjectBox.intersectsBox(placedObjBox)) {
-                                                isColliding = true;
-                                                break;
-                                            }
-                                        }
-                                    }
+                                    if(reticle) reticle.visible = isPlaceable;
+                                    
+                                    // ▼▼▼▼▼ ここからがコメントアウト対象 ▼▼▼▼▼
+                                    // crossMark.visible = !isPlaceable; 
+                                    // if (crossMark.visible && activeObject) {
+                                    //     crossMark.position.copy(activeObject.position).add(activeObject.userData.centerOffset);
+                                    //     const scale = activeObject.userData.crossMarkScale * 0.6; 
+                                    //     crossMark.scale.set(scale, scale, scale);
+                                    //     crossMark.quaternion.copy(camera.quaternion);
+                                    // }
+                                    // ▲▲▲▲▲ ここまでがコメントアウト対象 ▲▲▲▲▲
 
-                                    isPlaceable = isOnFloor && !isColliding;
-
-                                    if(reticle) reticle.visible = isPlaceable; // 配置可能な場合のみレティクル表示
-                                    crossMark.visible = !isPlaceable; // 配置不可能な場合のみクロスマーク表示
-
-                                    if (crossMark.visible && activeObject) {
-                                        crossMark.position.copy(activeObject.position);
-                                        // 家具の底面中央に十字マークを合わせるためのオフセット調整
-                                        const box = new THREE.Box3().setFromObject(activeObject);
-                                        const center = new THREE.Vector3();
-                                        box.getCenter(center);
-                                        const size = box.getSize(new THREE.Vector3());
-                                        crossMark.position.y = activeObject.position.y + (size.y / 2) + 0.01; // 家具の底面から少し上に配置
-
-                                        const scale = activeObject.userData.crossMarkScale * 0.2; // ❌マークの大きさを0.2に修正
-                                        crossMark.scale.set(scale, scale, scale);
-                                        crossMark.quaternion.copy(camera.quaternion); // カメラの向きに合わせる
-                                    }
                                 } else {
                                     if(reticle) reticle.visible = true;
                                     crossMark.visible = false;
                                 }
-                            } else {
+                            } else { 
                                 if(reticle) reticle.visible = false;
                                 crossMark.visible = false;
                             }
                         } else {
-                            isPlaceable = false;
                             if(reticle) reticle.visible = false;
                             crossMark.visible = false;
-                            if (activeObject) activeObject.visible = false;
-                            if (instructionText.style.display !== 'block' && !isFloorDetected) {
-                                instructionText.style.display = 'block';
-                                startDotAnimation();
-                            }
+                        }
+                    } else {
+                        isPlaceable = false;
+                        if(reticle) reticle.visible = false;
+                        crossMark.visible = false;
+                        if (activeObject) activeObject.visible = false;
+                        if (instructionText.style.display !== 'block' && !isFloorDetected) {
+                            instructionText.style.display = 'block';
+                            startDotAnimation();
                         }
                     }
                 }
-
+                
                 if (isEditMode && (appState === 'PLACING' || appState === 'EDITING')) {
                     const decisionConfirmButton = document.querySelector('#decision-controls #confirm-button');
-                    decisionConfirmButton.disabled = !isPlaceable;
-                }
 
+                    // ▼▼▼▼▼ ここがコメントアウト対象 ▼▼▼▼▼
+                    // decisionConfirmButton.disabled = !isPlaceable;
+                    // ▲▲▲▲▲ ここまでがコメントアウト対象 ▲▲▲▲▲
+                }
+                
                 if (!hitTestSourceRequested && renderer.xr.getSession()) {
                     const session = renderer.xr.getSession();
                     session.requestReferenceSpace('viewer').then((referenceSpace) => {
@@ -2202,11 +1809,11 @@
                     });
                     hitTestSourceRequested = true;
                 }
-
+                
                 renderer.render(scene, camera);
             }
         }
-
+        
         main();
     </script>
 </body>
