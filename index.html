@@ -760,7 +760,6 @@
                                     <p>選択中のモデルをシーンから削除します。</p>
                                 </div>
                             </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -806,7 +805,7 @@
                 <div class="rotation-button-group">
                     <button id="rotate-left-button" class="group-button"></button>
                     <button id="rotate-right-button" class="group-button"></button>
-                </div>
+            </div>
             </div>
             <div id="decision-controls">
                 <button id="delete-button" class="group-button"></button>
@@ -872,6 +871,14 @@
             let helpModal, closeHelpButton;
             let tabButtons, helpPages;
             let confirmDialog, objectPendingDeletion = null;
+                const dialogParagraph = document.querySelector('#confirm-dialog p'); // 変更
+                const confirmYesBtn = document.getElementById('confirm-delete-yes'); // 変更
+                const confirmNoBtn = document.getElementById('confirm-delete-no'); // 変更
+                const originalDialogText = "このモデルを削除しますか？"; // 追加
+                const originalYesText = "はい"; // 追加
+                const discardDialogText = "現在の配置・編集作業を破棄して鑑賞モードに切り替えますか？"; // 追加
+                const discardYesText = "はい (破棄する)"; // 追加
+
 
             const furnitureData = [
                 { name: 'フォトグラメトリモデル',   file: 'photographchair_最新版.glb',     height: 0.79},
@@ -1047,11 +1054,6 @@
                 setupUI();
             }
 
-            function resetDeleteDialog() {
-                document.querySelector('#confirm-dialog p').textContent = "このモデルを削除しますか？";
-                document.getElementById('confirm-delete-yes').textContent = "はい";
-            }
-
             function setupUI() {
                 const furnitureModal = document.getElementById('furniture-modal');
                 const closeModalButton = document.getElementById('close-modal-button');
@@ -1136,70 +1138,96 @@
                 });
                 
                 confirmDialog = document.getElementById('confirm-dialog');
-                const confirmYesBtn = document.getElementById('confirm-delete-yes');
-                const confirmNoBtn = document.getElementById('confirm-delete-no');
-                
-                // 変更: 削除/モード切り替え確認の両方を処理するように修正
-                confirmYesBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    
-                    const isModeSwitchConfirmation = document.querySelector('#confirm-dialog p').textContent.includes("破棄して鑑賞モードに切り替えますか？");
-                    
-                    if (objectPendingDeletion) {
-                        startDeleteAnimation(objectPendingDeletion); // モデルをシーンから削除
-                    }
+                // const confirmYesBtn = document.getElementById('confirm-delete-yes'); // 既に上で取得済み
+                // const confirmNoBtn = document.getElementById('confirm-delete-no'); // 既に上で取得済み
 
-                    if (isModeSwitchConfirmation) {
-                        // モード切り替え処理を実行
-                        isEditMode = false;
-                        appState = 'IDLE'; 
-                        if (hoveredObject) setObjectTransparency(hoveredObject, false);
-                        hoveredObject = null;
-                    }
-                    
-                    resetDeleteDialog(); // ダイアログのテキストを元に戻す
-                    confirmDialog.style.display = 'none';
-                    objectPendingDeletion = null;
-                    updateUI();
-                });
-                
-                confirmNoBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    resetDeleteDialog(); // ダイアログのテキストを元に戻す
-                    confirmDialog.style.display = 'none';
-                    objectPendingDeletion = null;
-                    updateUI();
-                });
+                // ----------------------------------------------------
+                // 変更箇所 1: ダイアログの「はい」ボタンの処理
+                // ----------------------------------------------------
+                confirmYesBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    
+                    const isModeSwitchConfirmation = dialogParagraph.textContent === discardDialogText;
+                
+                    if (isModeSwitchConfirmation) {
+                        // モード切り替えのために破棄する場合
+                        if (objectPendingDeletion === previewObject && previewObject) {
+                            scene.remove(previewObject);
+                            previewObject = null;
+                        } else if (objectPendingDeletion === selectedObject && selectedObject) {
+                            setObjectTransparency(selectedObject, false); // 念のため不透明に戻す
+                            selectedObject = null;
+                        }
 
-                // 変更: モード切り替えボタンのロジック修正
+                        // 強制的に鑑賞モードに移行
+                        isEditMode = false;
+                        appState = 'IDLE';
+
+                        // ダイアログの表示を元の状態に戻す
+                        dialogParagraph.textContent = originalDialogText;
+                        confirmYesBtn.textContent = originalYesText;
+
+                    } else if (objectPendingDeletion) {
+                        // 通常のモデル削除の場合 (長押しまたは削除ボタン)
+                        startDeleteAnimation(objectPendingDeletion);
+                    }
+                
+                    confirmDialog.style.display = 'none';
+                    objectPendingDeletion = null;
+                    updateUI(); // 状態変更を反映
+                });
+
+                // ----------------------------------------------------
+                // 変更箇所 2: ダイアログの「いいえ」ボタンの処理
+                // ----------------------------------------------------
+                confirmNoBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    
+                    const isModeSwitchConfirmation = dialogParagraph.textContent === discardDialogText;
+
+                    if (isModeSwitchConfirmation) {
+                        // モード切り替えをキャンセルした場合、ダイアログを元に戻す
+                        dialogParagraph.textContent = originalDialogText;
+                        confirmYesBtn.textContent = originalYesText;
+                    }
+
+                    confirmDialog.style.display = 'none';
+                    objectPendingDeletion = null;
+                });
+                // ----------------------------------------------------
+                
                 document.getElementById('mode-switch-button').addEventListener('click', (e) => {
                     e.stopPropagation();
+                    
+                    // 編集モードから鑑賞モードへの切り替えを試みる
+                    if (isEditMode && (appState === 'PLACING' || appState === 'EDITING')) {
+                        // 配置/編集作業中のため、確認ダイアログを表示
+                        objectPendingDeletion = (appState === 'PLACING') ? previewObject : selectedObject;
 
-                    if (isEditMode) {
-                        // 編集モードから鑑賞モードへの切り替え
-                        if (appState === 'PLACING' || appState === 'EDITING') {
-                            // 配置・編集作業中のため、確認ダイアログを表示
-                            objectPendingDeletion = (appState === 'PLACING') ? previewObject : selectedObject;
-                            
-                            document.querySelector('#confirm-dialog p').textContent = "現在の配置・編集作業を破棄して鑑賞モードに切り替えますか？";
-                            document.getElementById('confirm-delete-yes').textContent = "はい (破棄する)";
+                        // ダイアログの文言をモード切り替え用に変更
+                        dialogParagraph.textContent = discardDialogText;
+                        confirmYesBtn.textContent = discardYesText;
 
-                            confirmDialog.style.display = 'flex';
-                            return;
-                        } else {
-                            // IDLE状態なので直接切り替え
-                            isEditMode = false;
-                            if (hoveredObject) setObjectTransparency(hoveredObject, false);
-                            hoveredObject = null;
-                        }
-                    } else {
-                        // 鑑賞モードから編集モードへの切り替え（常に許可）
-                        isEditMode = true;
-                    }
-                    
+                        confirmDialog.style.display = 'flex';
+                        return;
+                    }
+                    
+                    // それ以外（IDLE状態での切り替え、または鑑賞から編集への切り替え）
+                    isEditMode = !isEditMode;
+                    if (!isEditMode) {
+                        // 鑑賞モードへの移行時
+                        appState = 'IDLE';
+                        if (selectedObject) setObjectTransparency(selectedObject, false);
+                        if (hoveredObject) setObjectTransparency(hoveredObject, false);
+                        selectedObject = null;
+                        hoveredObject = null;
+                    } else {
+                        // 編集モードへの移行時
+                        if (hoveredObject) setObjectTransparency(hoveredObject, false);
+                        hoveredObject = null;
+                    }
                     updateUI();
                 });
-                // 修正終わり
 
                 document.getElementById('edit-button').addEventListener('click', (e) => { e.stopPropagation(); onSelect(); });
                 
@@ -1298,8 +1326,10 @@
             function handleLongPress(tappedObject) {
                 if (!tappedObject || confirmDialog.style.display === 'flex') return;
                 
-                resetDeleteDialog(); // 長押し時は削除ダイアログの初期状態に戻す
-                
+                // ダイアログの文言を通常削除用にリセット
+                dialogParagraph.textContent = originalDialogText;
+                confirmYesBtn.textContent = originalYesText;
+                
                 objectPendingDeletion = tappedObject;
                 confirmDialog.style.display = 'flex';
             }
@@ -1533,15 +1563,6 @@
             
             function startDeleteAnimation(objectToDelete) {
                 if (!objectToDelete) return;
-
-                // previewObjectまたはselectedObjectが対象の場合はまずリセット
-                if (objectToDelete === selectedObject) {
-                    selectedObject = null;
-                    appState = 'IDLE';
-                } else if (objectToDelete === previewObject) {
-                    previewObject = null;
-                    appState = 'IDLE';
-                }
                 
                 const indexInPlaced = placedObjects.indexOf(objectToDelete);
                 if (indexInPlaced > -1) {
@@ -1554,6 +1575,16 @@
                     duration: 0.3,
                     initialY: objectToDelete.position.y
                 });
+                
+                if (objectToDelete === selectedObject) {
+                    selectedObject = null;
+                    appState = 'IDLE';
+                    updateUI();
+                } else if (appState === 'PLACING' && objectToDelete === previewObject) {
+                    previewObject = null;
+                    appState = 'IDLE'; 
+                    updateUI();
+                }
             }
             
             function onDelete() {
@@ -1607,10 +1638,10 @@
                 helpButton.style.display = 'flex';
                 modeSwitchButton.style.display = 'flex';
 
-                // 変更: モード切り替えボタンの見た目の制御を調整
                 if (appState === 'PLACING' || appState === 'EDITING') {
-                    modeSwitchButton.style.opacity = '1'; // 有効化
-                    modeSwitchButton.style.cursor = 'pointer';
+                    // 配置・編集中の場合はモード切り替えボタンを無効化（見かけのみ）
+                    modeSwitchButton.style.opacity = '1'; // 今回はクリックイベントで処理するため不透明に戻す
+                    modeSwitchButton.style.cursor = 'pointer'; // カーソルも戻す
                 } else {
                     modeSwitchButton.style.opacity = '1';
                     modeSwitchButton.style.cursor = 'pointer';
@@ -1650,7 +1681,7 @@
             }
 
             function handleHover() {
-                if (gestureState.isInteracting || isRotatingContinuously || gestureState.longPressTimer || confirmDialog.style.display === 'flex') {
+                if (gestureState.isInteracting || isRotatingContinuously || gestureState.longPressTimer) {
                     if(hoveredObject) {
                           setObjectTransparency(hoveredObject, false);
                           hoveredObject = null;
@@ -1770,11 +1801,14 @@
                                 updateUI();
                             }
                             
+                            // ▼▼▼▼▼ ここからがコメントアウト対象 ▼▼▼▼▼
+
+                            // const Y_TOLERANCE = 0.2;
+                            // isPlaceable = Math.abs(hitY - floorY) < Y_TOLERANCE;
+                            
                             // 上の判定を無効化し、常に「配置可能」とするためのコード
                             isPlaceable = true;
 
-                            // ▼▼▼▼▼ ここからがコメントアウト対象 ▼▼▼▼▼
-                            // isPlaceable = Math.abs(hitY - floorY) < Y_TOLERANCE;
                             // ▲▲▲▲▲ ここまでがコメントアウト対象 ▲▲▲▲▲
                             
                             if(reticle) reticle.matrix.fromArray(hitPose.transform.matrix);
@@ -1814,15 +1848,11 @@
                         } else {
                             if(reticle) reticle.visible = false;
                             crossMark.visible = false;
-                        }
-                    } else {
-                        isPlaceable = false;
-                        if(reticle) reticle.visible = false;
-                        crossMark.visible = false;
-                        if (activeObject) activeObject.visible = false;
-                        if (instructionText.style.display !== 'block' && !isFloorDetected) {
-                            instructionText.style.display = 'block';
-                            startDotAnimation();
+                            if (activeObject) activeObject.visible = false;
+                            if (instructionText.style.display !== 'block' && !isFloorDetected) {
+                                instructionText.style.display = 'block';
+                                startDotAnimation();
+                            }
                         }
                     }
                 }
@@ -1830,7 +1860,7 @@
                 if (isEditMode && (appState === 'PLACING' || appState === 'EDITING')) {
                     const decisionConfirmButton = document.querySelector('#decision-controls #confirm-button');
 
-                    // ▼▼▼▼▼ ここがコメントアウト対象 ▲▲▲▲▲
+                    // ▼▼▼▼▼ ここがコメントアウト対象 ▼▼▼▼▼
                     // decisionConfirmButton.disabled = !isPlaceable;
                     // ▲▲▲▲▲ ここまでがコメントアウト対象 ▲▲▲▲▲
                 }
