@@ -954,30 +954,9 @@ function render(timestamp, frame) {
                 const hit = hitTestResults[0];
                 const pose = hit.getPose(renderer.xr.getReferenceSpace());
                 
-                // ヒットした場所の姿勢（回転）を取得
-                const hitMatrix = new THREE.Matrix4().fromArray(pose.transform.matrix);
-                const hitRotation = new THREE.Quaternion().setFromRotationMatrix(hitMatrix);
-                
-                // 面の向き（法線ベクトル）を計算
-                // WebXRのヒットテストでは、Y軸(0,1,0)が面の法線方向になります
-                const normal = new THREE.Vector3(0, 1, 0).applyQuaternion(hitRotation);
-                
-                // 面が「水平」か「垂直」かを判定 (Y成分が1に近ければ床、0に近ければ壁)
-                const isHorizontal = Math.abs(normal.y) > 0.8; 
-                
-                // 現在選択中の家具のタイプを取得 (未定義ならfloor)
-                const placementType = currentFurnitureData ? (currentFurnitureData.placement || 'floor') : 'floor';
-                
-                // 配置条件チェック
-                // 1. 床用家具かつ水平面
-                // 2. 壁用家具かつ垂直面
-                const isOrientationValid = (placementType === 'floor' && isHorizontal) || (placementType === 'wall' && !isHorizontal);
-
-                // レティクルの表示と位置合わせ
-                reticle.visible = isOrientationValid;
-                if (isOrientationValid) {
-                    reticle.matrix.fromArray(pose.transform.matrix);
-                }
+                // 【修正】制限を撤廃し、ヒットしたら常にレティクルを表示・追従させる
+                reticle.visible = true;
+                reticle.matrix.fromArray(pose.transform.matrix);
                 
                 if (!isFloorDetected) {
                     isFloorDetected = true;
@@ -987,63 +966,58 @@ function render(timestamp, frame) {
                 }
 
                 const activeObject = getActiveObject();
+                // 編集中かつ、指で操作していない時だけ追従
                 if (activeObject && !gestureState.isInteracting && !isRotatingContinuously) {
+                    activeObject.visible = true;
+                    
+                    // 位置をレティクルに合わせる
+                    activeObject.position.setFromMatrixPosition(reticle.matrix);
+
+                    // 面の向き（法線）を取得
+                    const hitMatrix = new THREE.Matrix4().fromArray(pose.transform.matrix);
+                    const hitRotation = new THREE.Quaternion().setFromRotationMatrix(hitMatrix);
+                    const normal = new THREE.Vector3(0, 1, 0).applyQuaternion(hitRotation); // Y軸が法線
+
+                    // 家具のタイプを取得
+                    const placementType = currentFurnitureData ? (currentFurnitureData.placement || 'floor') : 'floor';
+
+                    // 【修正】向きの自動調整
+                    if (placementType === 'wall') {
+                        // 壁用家具: 常に壁の法線（手前）を向くように回転
+                        const lookPos = activeObject.position.clone().add(normal);
+                        activeObject.lookAt(lookPos);
+                    } else {
+                        // 床用家具:
+                        // 壁（垂直面）にヒットした場合でも、強制的に壁に張り付かせる（追従させる）
+                        if (Math.abs(normal.y) < 0.5) { // 垂直に近い面
+                             const lookPos = activeObject.position.clone().add(normal);
+                             activeObject.lookAt(lookPos);
+                        } else {
+                            // 床（水平面）: 傾き補正はせず、ユーザー操作のY回転を維持したいので
+                            // 何もしない（positionのみ追従済み）
+                            // ※必要であれば、ここで床の傾斜に合わせて傾ける処理を入れる
+                        }
+                    }
                     
                     // 衝突判定
                     const isColliding = checkCollision(activeObject);
-                    // 向きが合っていて、かつ衝突していない場合のみ配置可能
-                    const canPlace = isOrientationValid && !isColliding; 
+                    const canPlace = !isColliding; 
                     
                     if (canPlace) {
-                        activeObject.visible = true;
-                        
-                        // 位置と向きの更新
-                        activeObject.position.setFromMatrixPosition(reticle.matrix);
-                        
-                        if (placementType === 'wall') {
-                            // 【壁用】壁の法線に向かってZ軸を合わせる（モデルの「背中」を壁に向ける）
-                            // WebXRのヒットテストの回転をそのまま適用すると、Y軸が壁から飛び出す向きになることが多い
-                            // モデルの前方(Z)を壁の法線(normal)に向けさせる
-                            
-                            // 壁に張り付く位置
-                            activeObject.position.copy(reticle.position);
-                            
-                            // 壁の法線方向を向く回転を作成
-                            const lookPos = activeObject.position.clone().add(normal);
-                            activeObject.lookAt(lookPos);
-                            
-                        } else {
-                            // 【床用】従来どおり（Y軸回転のみ保持したい場合はここで調整）
-                            // ヒットテストの回転をそのまま使うと傾斜に合わせて傾く
-                            activeObject.position.setFromMatrixPosition(reticle.matrix);
-                            // 床置きの場合、Y軸回転（向き）はユーザー操作に任せ、傾きだけリセットするなどの調整も可能
-                            // ここでは簡易的にレティクルの回転を適用し、ユーザー操作のY回転を加える実装になっている前提
-                        }
-
                         crossMark.visible = false;
                         ui['confirm-button'].disabled = false;
                         ui['confirm-button'].style.opacity = '1';
                     } else {
-                        // 配置不可（向きが違う or 衝突）
-                        activeObject.visible = true; // バツ印の位置基準にするため表示はする
-                        activeObject.position.setFromMatrixPosition(hitMatrix); // とりあえずその場に置く
-
-                        reticle.visible = false;
+                        // 衝突時は配置不可マークを出す
                         crossMark.visible = true;
-                        
                         crossMark.position.copy(activeObject.position);
                         
                         // バツ印を少し浮かせて、カメラに向ける
-                        if (placementType === 'wall') {
-                            crossMark.position.add(normal.clone().multiplyScalar(0.05)); // 壁から浮かす
-                            crossMark.lookAt(camera.position); 
-                        } else {
-                            crossMark.position.y += 0.05;
-                            crossMark.rotation.x = -Math.PI / 2;
-                            crossMark.rotation.z = camera.rotation.y;
-                        }
+                        crossMark.position.add(normal.clone().multiplyScalar(0.05)); 
+                        crossMark.lookAt(camera.position);
 
-                        const s = activeObject.userData.crossMarkScale * 0.3;
+                        // バツ印のサイズ調整
+                        const s = (activeObject.userData.crossMarkScale || 0.5) * 0.3;
                         crossMark.scale.set(s, s, s);
 
                         ui['confirm-button'].disabled = true;
@@ -1054,9 +1028,10 @@ function render(timestamp, frame) {
                 }
 
             } else {
-                // ヒットなし
+                // ヒットしなかった場合（空間など）
                 reticle.visible = false;
-                if (isFloorDetected && (currentAppState === APP_STATE.PLACING || currentAppState === APP_STATE.EDITING)) {
+                // 配置・編集中なら家具も隠す
+                if (currentAppState === APP_STATE.PLACING || currentAppState === APP_STATE.EDITING) {
                     ui['confirm-button'].disabled = true;
                     const activeObject = getActiveObject();
                     if(activeObject) activeObject.visible = false;
@@ -1171,5 +1146,6 @@ function stopDotAnimation() {
     dotAnimationTimer = null;
 
 }
+
 
 
