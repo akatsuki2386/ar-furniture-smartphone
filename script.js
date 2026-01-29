@@ -846,27 +846,54 @@ function adjustModalForKeyboard() {
 
 function startPlacingFurniture(item) {
     currentFurnitureData = item;
-    closeModal();
     
     const gltf = preloadedModels.get(item.file);
+    
     if (!gltf) {
-        alert('モデルを読み込み中です...');
+        // 【修正】alert() はARセッションを強制終了させるため削除しました。
+        // 代わりに、コンソールにログを出しつつ、その場で読み込みを試みます。
+        console.log('モデルを読み込み中...', item.file);
+        
+        // 読み込み中の表示（簡易的に案内テキストを使用）
+        ui['instruction-text'].textContent = 'モデルを読み込み中...';
+        ui['instruction-text'].style.display = 'block';
+
+        loader.load(item.file, (loadedGltf) => {
+            preloadedModels.set(item.file, loadedGltf);
+            // 読み込み完了したら再帰的に呼び出して配置開始
+            ui['instruction-text'].style.display = 'none';
+            startPlacingFurniture(item);
+        }, undefined, (err) => {
+            console.error('モデルの読み込みに失敗しました', err);
+            ui['instruction-text'].textContent = '読み込みエラー';
+            setTimeout(() => { ui['instruction-text'].style.display = 'none'; }, 2000);
+        });
+        
         return;
     }
+    
+    // モデルがある場合のみモーダルを閉じて配置へ
+    closeModal();
     
     if (previewObject) scene.remove(previewObject);
     
     previewObject = gltf.scene.clone();
     
+    // スケール調整 (高さ基準)
     const box = new THREE.Box3().setFromObject(previewObject);
     const size = box.getSize(new THREE.Vector3());
-    const scale = item.height / size.y;
+    // サイズが0の場合（読み込み直後など）のゼロ除算対策
+    const height = size.y || 1; 
+    const scale = item.height / height;
+    
     previewObject.scale.set(scale, scale, scale);
     
+    // 初期スケールを保存
     previewObject.userData = {
         initialScale: new THREE.Vector3(scale, scale, scale),
         scaleMultiplier: 1.0,
-        crossMarkScale: Math.max(size.x, size.z) * scale
+        // バツ印のサイズ計算も安全に
+        crossMarkScale: Math.max(size.x || 0.5, size.z || 0.5) * scale
     };
     
     setObjectTransparency(previewObject, true);
@@ -1144,4 +1171,5 @@ function stopDotAnimation() {
     dotAnimationTimer = null;
 
 }
+
 
