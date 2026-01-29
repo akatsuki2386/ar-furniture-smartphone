@@ -7,22 +7,13 @@ import { XREstimatedLight } from 'three/addons/webxr/XREstimatedLight.js';
 // 定数・設定
 // ==========================================
 const FURNITURE_DATA = [
-    { name: 'イス(生成AI)', file: 'AI_chiar.glb', height: 0.79, category: 'チェア', thumbnail: 'thumbnails/chair_thumb.png' , placement: 'floor'},
-    { name: 'イス(生成AI)', file: 'AIイス.glb', height: 0.79, category: 'チェア', thumbnail: 'thumbnails/chair_thumb.png' , placement: 'floor'},
-    { name: 'イス(フォトグラメトリ1)', file: 'photographchair.glb', height: 0.79, category: 'チェア', thumbnail: 'thumbnails/chair_thumb.png', placement: 'floor' },
-    { name: 'イス(フォトグラメトリ2)', file: 'photochair.glb', height: 0.79, category: 'チェア', thumbnail: 'thumbnails/chair_thumb.png' , placement: 'floor'},
-    { name: '本棚', file: 'bookshelf.glb', height: 1.8, category: '収納', thumbnail: 'thumbnails/bookshelf_thumb.png', placement: 'floor' },
-    { name: '脚立', file: 'stand.glb', height: 1.2, category: 'その他', thumbnail: 'thumbnails/stand_thumb.png' , placement: 'floor'},
-    { name: 'ダイニングテーブル', file: 'dining_table.glb', height: 0.75, category: 'テーブル', thumbnail: 'thumbnails/dining_table_thumb.png' , placement: 'floor'},
-    { name: 'ソファ', file: 'sofa.glb', height: 0.7, category: 'ソファ', thumbnail: 'thumbnails/sofa_thumb.png' , placement: 'floor'},
-    { name: 'フロアランプ', file: 'floor_lamp.glb', height: 1.5, category: '照明', thumbnail: 'thumbnails/floor_lamp_thumb.png', placement: 'floor' },
-    { name: 'デスク', file: 'desk.glb', height: 0.72, category: 'テーブル', thumbnail: 'thumbnails/desk_thumb.png', placement: 'floor' },
-    { name: 'サイドテーブル', file: 'side_table.glb', height: 0.5, category: 'テーブル', thumbnail: 'thumbnails/side_table_thumb.png', placement: 'floor' },
-    { name: 'シングルベッド', file: 'single_bed.glb', height: 0.6, category: 'ベッド', thumbnail: 'thumbnails/single_bed_thumb.png', placement: 'floor' },
-    { name: 'テレビボード', file: 'tv_board.glb', height: 0.4, category: '収納', thumbnail: 'thumbnails/tv_board_thumb.png', placement: 'floor' },
-    { name: 'ローテーブル', file: 'low_table.glb', height: 0.35, category: 'テーブル', thumbnail: 'thumbnails/low_table_thumb.png' , placement: 'floor'},
-    { name: 'コートハンガー', file: 'coat_hanger.glb', height: 1.7, category: 'その他', thumbnail: 'thumbnails/coat_hanger_thumb.png' , placement: 'floor'},
-    { name: '壁掛け時計', file: 'wall_clock.glb', height: 0.3, category: 'その他', thumbnail: 'thumbnails/clock_thumb.png', placement: 'wall' }
+    { name: 'イス（フォトグラメトリ）',   file: 'photographchair_最新版.glb',     height: 0.79, category: 'チェア', placement: 'floor'},
+    { name: 'イス（生成AI）',   file: 'AIイス.glb',     height: 0.79, category: 'チェア', placement: 'floor'},
+    { name: 'イス（実験用）',   file: 'photograph_and_AIchair_最新版.glb', height: 0.79, category: 'チェア', placement: 'floor'}, 
+    { name: 'パイプイス',   file: 'base_basic_chair.glb',     height: 0.79, category: 'チェア', placement: 'floor'},
+    { name: '木製イス',   file: 'base_basic_woodchair.glb',     height: 0.81, category: 'チェア', placement: 'floor'},
+    { name: '本棚',   file: 'base_basic_book.glb', height: 0.94, category: '収納', placement: 'floor'},
+    { name: '机',   file: 'base_basic_table.glb',     height: 0.79, category: 'テーブル', placement: 'floor'},
 ];
 
 // アプリケーションの状態管理
@@ -1151,4 +1142,5 @@ function startDotAnimation() {
 function stopDotAnimation() {
     clearInterval(dotAnimationTimer);
     dotAnimationTimer = null;
+
 }
