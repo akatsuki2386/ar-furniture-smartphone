@@ -12,7 +12,7 @@ const FURNITURE_DATA = [
     { name: 'イス（実験用）',   file: 'photograph_and_AIchair_最新版.glb', height: 0.79, category: 'チェア', placement: 'floor'}, 
     { name: 'パイプイス',   file: 'base_basic_chair.glb',     height: 0.79, category: 'チェア', placement: 'floor'},
     { name: '木製イス',   file: 'base_basic_woodchair.glb',     height: 0.81, category: 'チェア', placement: 'floor'},
-    { name: '本棚',   file: 'base_basic_book.glb', height: 0.94, category: '収納', placement: 'floor'},
+    { name: '本棚',   file: 'base_basic_book.glb', height: 0.94, category: '収納', placement: 'wall'},
     { name: '机',   file: 'base_basic_table.glb',     height: 0.79, category: 'テーブル', placement: 'floor'},
 ];
 
@@ -1144,3 +1144,4 @@ function stopDotAnimation() {
     dotAnimationTimer = null;
 
 }
+
